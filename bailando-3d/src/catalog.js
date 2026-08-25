@@ -404,9 +404,11 @@ function buildRailing(w, o = {}) {
 }
 
 function buildRug(w, d, o = {}) {
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), fabOf(o.tone || 'rose'));
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), fabOf(o.tone || 'rose').clone());
   m.rotation.x = -Math.PI / 2; m.position.y = 0.006; m.receiveShadow = true;
-  return group(m);
+  m.userData.isScreen = true;
+  const g = group(m); g.userData.screen = m;
+  return g;
 }
 
 function buildMediaPanel(w, h, o = {}) {
@@ -497,7 +499,7 @@ export const CATALOG = [
     build: o => buildTvOnStand(75, o) },
 
   { key: 'gchair', group: 'PS5 & screens', name: 'Gaming chair', w: 0.70, d: 0.70, h: 1.25,
-    clear: 0.30, clearDir: 'ring',  seats: 1, kg: 20, tone: 'black', spec: 'Swivel base Ø0.70 m',
+    clear: 0.30, clearDir: 'ring',  seats: 1, clearNote: 'Swivel sweep 0.30 m', kg: 20, tone: 'black', spec: 'Swivel base Ø0.70 m',
     note: 'Swivel base sweeps wider than it looks — keep 0.3 m clear.', build: o => buildGamingChair(o) },
 
   { key: 'ledwall', group: 'PS5 & screens', name: 'LED video wall — 3 × 2 m', w: 3.00, d: 0.30, h: 2.30,
@@ -511,24 +513,24 @@ export const CATALOG = [
 
   /* ---- Seating ------------------------------------------------------ */
   { key: 'sofa2', group: 'Seating', name: 'Sofa — 2 seat', w: 1.50, d: 0.88, h: 0.76,
-    clear: 0.45, clearDir: 'front',  seats: 2, kg: 45, tone: 'teal', spec: '1.50 × 0.88 m', note: '',
+    clear: 0.45, clearDir: 'front',  seats: 2, clearNote: 'Leg room 0.45 m in front', kg: 45, tone: 'teal', spec: '1.50 × 0.88 m', note: '',
     build: o => buildSofa(1.50, 0.88, o) },
 
   { key: 'sofa3', group: 'Seating', name: 'Sofa — 3 seat', w: 2.10, d: 0.92, h: 0.76,
-    clear: 0.45, clearDir: 'front',  seats: 3, kg: 62, tone: 'teal', spec: '2.10 × 0.92 m', note: '',
+    clear: 0.45, clearDir: 'front',  seats: 3, clearNote: 'Leg room 0.45 m in front', kg: 62, tone: 'teal', spec: '2.10 × 0.92 m', note: '',
     build: o => buildSofa(2.10, 0.92, o) },
 
   { key: 'sectional', group: 'Seating', name: 'L-shape sectional', w: 2.60, d: 1.90, h: 0.76,
-    clear: 0.45, clearDir: 'front',  seats: 5, kg: 110, tone: 'teal', spec: '2.60 × 1.90 m corner unit',
+    clear: 0.45, clearDir: 'front',  seats: 5, clearNote: 'Leg room 0.45 m in front', kg: 110, tone: 'teal', spec: '2.60 × 1.90 m corner unit',
     note: 'Anchors a lounge corner. Outdoor-grade foam only — this is an open terrace.',
     build: o => buildSectional(2.60, 1.90, o) },
 
   { key: 'armchair', group: 'Seating', name: 'Lounge chair', w: 0.82, d: 0.82, h: 0.80,
-    clear: 0.40, clearDir: 'front',  seats: 1, kg: 18, tone: 'rose', spec: '0.82 × 0.82 m', note: '',
+    clear: 0.40, clearDir: 'front',  seats: 1, clearNote: 'Leg room 0.40 m in front', kg: 18, tone: 'rose', spec: '0.82 × 0.82 m', note: '',
     build: o => buildArmchair(o) },
 
   { key: 'beanbag', group: 'Seating', name: 'Bean bag', w: 0.92, d: 0.92, h: 0.62,
-    clear: 0.30, clearDir: 'front',  seats: 1, kg: 8, tone: 'rose', spec: 'Ø0.92 m',
+    clear: 0.30, clearDir: 'front',  seats: 1, clearNote: 'Room to sprawl 0.30 m', kg: 8, tone: 'rose', spec: 'Ø0.92 m',
     note: 'Cheapest way to seat the PS5 zone. Gets dragged around — plan for it.', build: o => buildBeanbag(o) },
 
   { key: 'coffee', group: 'Seating', name: 'Coffee table', w: 1.10, d: 0.60, h: 0.42,
@@ -536,12 +538,12 @@ export const CATALOG = [
     build: o => buildTable(1.10, 0.60, 0.42, o) },
 
   { key: 'cocktail', group: 'Seating', name: 'High cocktail table', w: 0.60, d: 0.60, h: 1.05,
-    clear: 0.55, clearDir: 'ring',  seats: 0, kg: 16, wood: 'black', spec: 'Ø0.60 m · 1.05 m tall',
+    clear: 0.55, clearDir: 'ring',  seats: 0, clearNote: 'Standing room 0.55 m all round', kg: 16, wood: 'black', spec: 'Ø0.60 m · 1.05 m tall',
     note: 'Four people stand around one. Best density per square metre on the terrace.',
     build: o => buildTable(0.60, 0.60, 1.05, o, true) },
 
   { key: 'dining4', group: 'Seating', name: 'Dining table — 4 seat', w: 1.80, d: 1.80, h: 0.76,
-    clear: 0.30, clearDir: 'ring',  seats: 4, kg: 55, wood: 'teak', tone: 'tan', spec: 'Table 0.90 × 0.90 m + 4 chairs',
+    clear: 0.30, clearDir: 'ring',  seats: 4, clearNote: 'Chair pull-out 0.30 m', kg: 55, wood: 'teak', tone: 'tan', spec: 'Table 0.90 × 0.90 m + 4 chairs',
     note: 'The 1.80 m footprint already includes pulled-out chairs.', build: o => buildDiningSet(o) },
 
   { key: 'stool', group: 'Seating', name: 'Bar stool', w: 0.42, d: 0.42, h: 0.95,

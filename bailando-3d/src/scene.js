@@ -144,6 +144,7 @@ export class Stage {
     this.camera = this.cam3d;
 
     this.mood = 'night';
+    this._draft = false;
     this.floorKey = 'terrazzo';
     this._floorTex = {};
   }
@@ -286,7 +287,26 @@ export class Stage {
     this.sun.target.position.set(0, 0, 0); this.sun.target.updateMatrixWorld();
   }
 
+  /* Plan view is a drawing, not a mood shot — light it flat and neutral so
+     dimensions stay readable whatever the venue lighting is set to. */
+  setDraft(on) {
+    if (on === this._draft) return;
+    this._draft = on;
+    if (on) {
+      this._saved = { hemi: this.hemi.intensity, sun: this.sun.intensity, exp: this.renderer.toneMappingExposure, fog: this.scene.fog };
+      this.hemi.color.setHex(0xffffff); this.hemi.groundColor.setHex(0xb9b6ae);
+      this.hemi.intensity = 2.6; this.sun.intensity = 0.7;
+      this.renderer.toneMappingExposure = 1.0;
+      this.scene.fog = null;
+      this.venueLights.visible = false;
+    } else {
+      if (this._saved) this.scene.fog = this._saved.fog;
+      this.setMood(this.mood);
+    }
+  }
+
   render(mode) {
+    this.setDraft(mode === 'plan');
     this.applyCamera(mode);
     this.sky.position.copy(this.camera.position);
     this.renderer.render(this.scene, this.camera);

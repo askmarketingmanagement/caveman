@@ -64,10 +64,12 @@ export function outsideBy(o, room) {
   return m;
 }
 
-/* Only things you cannot step over or around count as pinch points. */
+/* A pinch point only matters between things you cannot step around: a wall of
+   furniture, not a chair or a speaker you walk past. */
 const bulky = it => {
   const { w, d, def } = dimsOf(it);
-  return (def.h || 0) >= 1.0 || w * d >= 1.5;
+  const area = w * d;
+  return ((def.h || 0) >= 1.0 && area >= 0.8) || area >= 1.5;
 };
 
 export function analyse(items, room) {
@@ -115,8 +117,11 @@ export function analyse(items, room) {
       push('tight', [A.id, B.id], `${sep.toFixed(2)} m pinch between ${nameOf(A)} and ${nameOf(B)} — people need ${WALKWAY.toFixed(2)} m.`);
   }
 
-  /* clearance running into the parapet */
+  /* clearance running into the parapet — only for the hard ones. A sofa with
+     its front near the wall is a choice; a cue swing into the wall is not. */
   for (const it of solid) {
+    const def0 = BY_KEY[it.key] || {};
+    if (!def0.hard || it.key === 'stair') continue;   // the stair opening sits at the edge by design
     const cb = clearBox(it);
     if (!cb) continue;
     const over = outsideBy(cb, room);
