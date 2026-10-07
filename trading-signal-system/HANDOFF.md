@@ -97,6 +97,15 @@ day-10 time stop) was explained. Still awaiting "go" for Phase 2.
 - Costs in Pine: 0.33%/side percent commission (STT+charges+slippage). Flat DP ~₹18/sell NOT in Pine; Python adds it.
 - Pine limitations documented in `pine/PINE_SETUP.md` (per-symbol only, same-bar stop/target ambiguity, gap fills, macro dates as input string).
 
+## 2026-10-07: user asked about currency pairs
+Answer given: offshore forex (Olymp Trade, foreign brokers) = FEMA violation for
+Indian residents. Onshore NSE/BSE currency F&O has required a declared underlying
+exposure since RBI's circular took effect 3 May 2024; retail speculative volume fell
+~87%; a review was reported under consideration in Nov 2025 but nothing confirmed.
+So a retail speculator in India has no legal live venue for currency pairs today.
+Paper trading FX on TradingView is fine and the three strategies port to daily FX
+bars, but the primary system stays NSE cash equities. No spec change.
+
 ## Open questions for the user (from spec §7)
 
 - **Broker: user named Olymp Trade. Blocked until they pick a SEBI-registered broker or explicitly rewrite rule 5 (see Current phase).**
