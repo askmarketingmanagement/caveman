@@ -33,7 +33,7 @@ spec. The spec is otherwise unchanged and still awaits approval.
 1. **Setup lines filled in by Claude** (user delegated the choice):
    - Market: Nifty 50 constituent stocks, cash/delivery. Nifty 50 index as regime filter only.
    - Style: swing, 2–10 trading days, daily bars, next-open execution. Weekly + Nifty index as higher-timeframe filters.
-   - Capital ₹2,00,000; 1% (₹2,000) max risk per trade; max 3 positions; max 25% capital per position; max 3% total open risk.
+   - Capital ₹2,00,000 (PAPER; real capital is ₹700, see §0.3); 1% max risk per trade; max 3 positions; max 25% capital per position; max 3% total open risk.
    - Broker: Zerodha (Kite Connect official API for Phase 4; yfinance as EOD fallback).
 2. **Long-only.** Delivery account cannot hold overnight shorts; stock futures lots too large for ₹2L. Regime filter produces "NO TRADE" in down markets.
 3. **Index options intraday rejected** for lack of honest backtest data. Can be a separate later project.
@@ -78,6 +78,14 @@ NSE:RELIANCE daily bars (933 bars since 2023-01-01 available, enough for the
 2-year backtest). First live check done and logged in `journal/2026-10-07.md`:
 regime OFF, RBI hiked to 5.50% today, NO TRADE. `tools/regime_check.py` is the
 first verification script and the reference implementation of §3.1.
+
+**User's real capital is ₹700** (not ₹2L). Spec §0.3 added: system is
+unprofitable below ~₹30k because of the flat ₹18 DP charge; at ₹700 the 1% rule
+sizes zero shares and an all-in trade needs a 76% win rate. Decision: all work
+continues as PAPER TRADING on TradingView Paper Trading with a virtual balance;
+no real-money sizing until capital ≥ ~₹30k. User asked for trade timing; the
+spec's timing (close-of-day signal → next-open stop order → 2–10 day hold →
+day-10 time stop) was explained. Still awaiting "go" for Phase 2.
 
 ## Open questions for the user (from spec §7)
 

@@ -28,6 +28,23 @@ these four lines.
 
 With ₹2L in a delivery account you cannot hold a short overnight in cash equity, and one lot of stock futures is typically ₹5–15 lakh notional. So every strategy below takes longs only. In a falling market the correct output is "NO TRADE", and the regime filter is what produces that. Expect long stretches of nothing. That is the design, not a bug.
 
+### 0.3 Minimum viable capital (added 2026-10-07 after user said capital is ₹700)
+
+Zerodha's DP charge (₹15.34 + GST ≈ ₹18.10 per sell) is flat, so it dominates
+small accounts. `tools/fee_math.py` computes, for the cheapest Nifty 50 stock
+on 2026-10-07 (Tata Steel ₹175.64) with a 3% stop:
+
+| Capital | Under the 1% rule | All-in, ignoring the rule |
+|---|---|---|
+| ₹700 | qty 0 → NO TRADE, always | 3 shares, cost ≈ 1.3R, needs **76% win rate** to break even |
+| ₹30,680 | cost = 0.20R (the ceiling this spec tolerates) | — |
+| ₹50,000+ | comfortable; ₹2,000 of 1R at ₹2L is the design point | — |
+
+**Verdict:** this system cannot be run profitably with ₹700. Below roughly
+₹30,000 the fee drag exceeds any realistic edge. ₹700 is a paper-trading
+budget: run the system on TradingView Paper Trading with a virtual balance
+equal to the capital you could realistically fund later, and keep the ₹700.
+
 ---
 
 ## 1. Universe and data
