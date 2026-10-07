@@ -61,6 +61,16 @@ access from this session. Recommended TradingView Paper Trading over the Olymp
 Trade demo (exchange data, SL/TP, trade log). Offered to start Phase 2 with
 defaults (all three strategies, Pine v5, ₹2L paper sizing) on the word "go".
 
+User offered TradingView access, then pointed at the **official TradingView
+MCP server** (https://mcp.tradingview.com/mcp, OAuth 2.1, public beta, needs
+Essential plan or above; ~100 tool calls/min). Decision: this is the approved,
+ToS-compliant data path for Phase 5 chart checks and a candidate historical
+data source for Phase 4 (alongside yfinance). No credentials are ever to be
+shared with Claude. The `claude mcp add` command cannot complete OAuth in a
+cloud session; user must add it as a connector at
+https://claude.ai/customize/connectors and start a new session. Once present,
+tools will appear as `mcp__mcp-tradingview__*` (verify name at session start).
+
 ## Open questions for the user (from spec §7)
 
 - **Broker: user named Olymp Trade. Blocked until they pick a SEBI-registered broker or explicitly rewrite rule 5 (see Current phase).**
