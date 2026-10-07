@@ -3,13 +3,20 @@
 Re-read this file at the start of every session. Update it whenever a decision
 is made, a phase changes, or the user gives an instruction.
 
-Last updated: 2026-10-07
+Last updated: 2026-10-07 (session 2)
 
 ## Current phase
 
-**Phase 1 — Strategy spec written, AWAITING USER APPROVAL.**
-Do not start Phase 2 (Pine Script) until the user approves `STRATEGY_SPEC.md`
-or asks for changes.
+**Phase 1 — BLOCKED on broker decision.**
+User said they use **Olymp Trade**. Olymp Trade is on the RBI Alert List of
+entities not authorised to deal in forex / run electronic trading platforms
+in India, is not SEBI-registered, and offers fixed-time (binary-style) trades
+that have no stop-loss, no target and a fixed payout. That conflicts with the
+user's own rule 5 (SEBI-regulated only) and rule 2 (no stop-loss = no signal).
+Claude has told the user this and asked them to choose a SEBI-registered
+broker (Zerodha / Upstox / Angel One / Groww / etc.) before Phase 2.
+Do NOT build signals for Olymp Trade or any fixed-time-trade product under this
+spec. The spec is otherwise unchanged and still awaits approval.
 
 ## Phase checklist
 
@@ -37,6 +44,8 @@ or asks for changes.
 8. **Files live in `trading-signal-system/`** inside this repo (the caveman plugin repo). Kept in a subfolder so the repo's own README/INSTALL/CLAUDE docs are untouched.
 
 ## Open questions for the user (from spec §7)
+
+- **Broker: user named Olymp Trade. Blocked until they pick a SEBI-registered broker or explicitly rewrite rule 5 (see Current phase).**
 
 - Accept/change the four setup lines, especially capital.
 - Long-only OK?
