@@ -106,6 +106,14 @@ So a retail speculator in India has no legal live venue for currency pairs today
 Paper trading FX on TradingView is fine and the three strategies port to daily FX
 bars, but the primary system stays NSE cash equities. No spec change.
 
+## What the TradingView connector can and cannot do (told to user 2026-10-07)
+CAN: quotes, daily bars back to listing, screener (market=india, index filter works),
+economic + earnings calendars, news, simple price alerts, watchlists.
+CANNOT: see or control the user's chart, paste/compile Pine, read compile errors, run
+the Strategy Tester, create indicator-based alerts. The Pine paste step is the user's.
+Created watchlist "NSS Nifty 50" in the user's account (NIFTY, INDIAVIX + 50 names).
+Universe saved to `data/universe_nifty50_2026-10-07.json`. User has no alerts yet.
+
 ## Open questions for the user (from spec §7)
 
 - **Broker: user named Olymp Trade. Blocked until they pick a SEBI-registered broker or explicitly rewrite rule 5 (see Current phase).**
