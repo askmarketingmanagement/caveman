@@ -25,7 +25,7 @@ spec. The spec is otherwise unchanged and still awaits approval.
 | 1 | `STRATEGY_SPEC.md` | Drafted, awaiting approval |
 | 2 | Pine v5 indicator + strategy(), paste instructions | Not started |
 | 3 | `BACKTEST_REPORT.md` with costs, regime + day-of-week breakdown, keep/kill/tweak | Not started |
-| 4 | Python companion app: data pull, signal engine matching Pine, verification script, news-risk check, local dashboard, trade journal | Not started |
+| 4 | Python companion app: data pull, signal engine matching Pine, verification script, news-risk check, local dashboard, trade journal | Started early: `tools/regime_check.py`, `journal/` |
 | 5 | Daily operating routine in the fixed signal format | Not started |
 
 ## Decisions so far
@@ -70,6 +70,14 @@ shared with Claude. The `claude mcp add` command cannot complete OAuth in a
 cloud session; user must add it as a connector at
 https://claude.ai/customize/connectors and start a new session. Once present,
 tools will appear as `mcp__mcp-tradingview__*` (verify name at session start).
+
+TradingView connector is now live in-session (tools `mcp__Tradingview__mcp-tv-*`:
+get-ohlcv, get-symbol-data(-batch), run-screener incl. market=india, economic/
+earnings calendars, news, alerts, watchlists). Verified: NSE:NIFTY, NSE:INDIAVIX,
+NSE:RELIANCE daily bars (933 bars since 2023-01-01 available, enough for the
+2-year backtest). First live check done and logged in `journal/2026-10-07.md`:
+regime OFF, RBI hiked to 5.50% today, NO TRADE. `tools/regime_check.py` is the
+first verification script and the reference implementation of §3.1.
 
 ## Open questions for the user (from spec §7)
 
