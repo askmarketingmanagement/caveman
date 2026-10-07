@@ -54,6 +54,13 @@ output there is NO TRADE every day. Offered path: build Phases 2–4 against
 TradingView paper trading / a SEBI broker's free demo, which costs ₹0 and is
 required by rule 4 anyway. Awaiting user's go-ahead.
 
+User then said they will paper trade on Olymp Trade and asked for a live
+position call "with the help of TradingView". Answered NO TRADE: no system
+built or backtested yet (rule 4), no instrument/chart/timeframe given, no data
+access from this session. Recommended TradingView Paper Trading over the Olymp
+Trade demo (exchange data, SL/TP, trade log). Offered to start Phase 2 with
+defaults (all three strategies, Pine v5, ₹2L paper sizing) on the word "go".
+
 ## Open questions for the user (from spec §7)
 
 - **Broker: user named Olymp Trade. Blocked until they pick a SEBI-registered broker or explicitly rewrite rule 5 (see Current phase).**
