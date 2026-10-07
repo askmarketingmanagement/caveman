@@ -43,6 +43,17 @@ spec. The spec is otherwise unchanged and still awaits approval.
 7. **Regime breakdown** by Nifty ADX > 25 vs ≤ 25. **Day-of-week** replaces time-of-day because entries are at the next open.
 8. **Files live in `trading-signal-system/`** inside this repo (the caveman plugin repo). Kept in a subfolder so the repo's own README/INSTALL/CLAUDE docs are untouched.
 
+## Session 2 update
+
+User reaffirmed: has deposited ₹700 on Olymp Trade and intends to trade there.
+Claude's position, communicated to user: will not build signals for Olymp
+Trade (RBI Alert List, no stop-loss product, no verifiable data, user's own
+rules 2/4/5 cannot be met). Under the user's 1% rule, ₹700 capital means ₹7
+risk per trade, below the platform's minimum stake, so the system's honest
+output there is NO TRADE every day. Offered path: build Phases 2–4 against
+TradingView paper trading / a SEBI broker's free demo, which costs ₹0 and is
+required by rule 4 anyway. Awaiting user's go-ahead.
+
 ## Open questions for the user (from spec §7)
 
 - **Broker: user named Olymp Trade. Blocked until they pick a SEBI-registered broker or explicitly rewrite rule 5 (see Current phase).**
