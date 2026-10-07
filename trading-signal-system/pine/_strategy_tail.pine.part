@@ -1,0 +1,99 @@
+
+// ===================== ORDER MANAGEMENT =====================
+// Execution model (mirrored by the Python engine):
+//  - A/B: buy STOP at signal-bar high + 1 tick, valid next bar only; C: buy LIMIT at signal close, valid next bar only.
+//  - Stop-loss and targets are attached to the entry so they are live from the fill bar. Levels are computed from the trigger price.
+//  - Close-based exits (trail, invalidation, time stop) are decided at bar close and fill at the next open.
+var int   inStrat    = 0        // 0 flat, 1 A, 2 B, 3 C
+var int   entryBar   = na
+var float lvlEntry   = na
+var float lvlSL      = na
+var float lvlT1      = na
+var float lvlT2      = na
+var float lvlBreak   = na       // B: breakout level for the invalidation rule
+var float qtyFull    = na
+var bool  t1Done     = false
+var int   pendingBar = na
+var int   pendingStrat = 0
+
+flat = strategy.position_size == 0
+
+// 1) An order placed last bar that did not fill expires now
+if flat and not na(pendingBar) and bar_index > pendingBar
+    strategy.cancel_all()
+    pendingBar := na
+    pendingStrat := 0
+
+// 2) Detect a fresh fill
+if not flat and inStrat == 0
+    inStrat := pendingStrat
+    entryBar := bar_index
+    qtyFull := strategy.position_size
+    pendingBar := na
+    pendingStrat := 0
+    t1Done := false
+
+// 3) Detect position closed
+if flat and inStrat != 0
+    inStrat := 0
+    entryBar := na
+    t1Done := false
+    lvlEntry := na
+    lvlSL := na
+    lvlT1 := na
+    lvlT2 := na
+    lvlBreak := na
+
+// 4) Manage the open position
+if not flat and inStrat != 0
+    barsHeld = bar_index - entryBar
+    if not t1Done and strategy.position_size < qtyFull
+        t1Done := true
+    if inStrat == 1
+        // after T1: remaining half exits on first close below EMA20; hard stop stays
+        if t1Done and close < ema20
+            strategy.close("A", comment="A trail EMA20")
+        if barsHeld >= 10
+            strategy.close("A", comment="A time stop")
+    if inStrat == 2
+        if barsHeld <= 2 and close < lvlBreak
+            strategy.close("B", comment="B back in range")
+        if t1Done
+            trailStop = math.max(lvlSL, ta.lowest(low, 3))
+            strategy.exit("B-T2", "B", stop=trailStop, comment="B trail")
+        if barsHeld >= 10
+            strategy.close("B", comment="B time stop")
+    if inStrat == 3
+        if close > ema10 or rsi2 > 70 or barsHeld >= 5
+            strategy.close("C", comment=close > ema10 ? "C EMA10" : rsi2 > 70 ? "C RSI2>70" : "C time stop")
+
+// 5) New signal: place entry + protective exits together so the stop is live from the fill bar
+if flat and na(pendingBar) and fire
+    lvlEntry := sigEntry
+    lvlSL := sigSL
+    lvlT1 := sigT1
+    lvlT2 := sigT2
+    lvlBreak := hh20
+    pendingBar := bar_index
+    pendingStrat := sig
+    if sig == 1
+        strategy.entry("A", strategy.long, qty=qty, stop=sigEntry, comment="A")
+        strategy.exit("A-T1", "A", qty_percent=50, stop=sigSL, limit=sigT1, comment="A T1/SL")
+        strategy.exit("A-T2", "A", stop=sigSL, limit=sigT2, comment="A T2/SL")
+    if sig == 2
+        strategy.entry("B", strategy.long, qty=qty, stop=sigEntry, comment="B")
+        strategy.exit("B-T1", "B", qty_percent=50, stop=sigSL, limit=sigT1, comment="B T1/SL")
+        strategy.exit("B-T2", "B", stop=sigSL, comment="B SL")
+    if sig == 3
+        strategy.entry("C", strategy.long, qty=qty, limit=sigEntry, comment="C")
+        strategy.exit("C-SL", "C", stop=sigSL, comment="C SL")
+
+// Visuals
+plot(ema20, "EMA20", color=color.new(color.orange, 0))
+plot(ema50, "EMA50", color=color.new(color.blue, 0))
+plot(ema200, "EMA200", color=color.new(color.gray, 30))
+plot(not flat ? lvlSL : na, "Active SL", color=color.red, style=plot.style_linebr)
+plot(not flat ? lvlT1 : na, "Active T1", color=color.teal, style=plot.style_linebr)
+bgcolor(timeframe.isdaily and not regimeOn ? color.new(color.red, 92) : na)
+bgcolor(timeframe.isdaily and newsVeto ? color.new(color.yellow, 88) : na)
+plotshape(fire and barstate.isconfirmed, "Signal", shape.triangleup, location.belowbar, color=color.green, size=size.tiny)

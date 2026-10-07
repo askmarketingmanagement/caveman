@@ -1,0 +1,49 @@
+
+// ===================== INDICATOR OUTPUT =====================
+plot(ema20, "EMA20", color=color.new(color.orange, 0), linewidth=1)
+plot(ema50, "EMA50", color=color.new(color.blue, 0), linewidth=1)
+plot(ema200, "EMA200", color=color.new(color.gray, 30), linewidth=1)
+bgcolor(timeframe.isdaily and not regimeOn ? color.new(color.red, 92) : na, title="Regime OFF shade")
+bgcolor(timeframe.isdaily and newsVeto ? color.new(color.yellow, 88) : na, title="News veto shade")
+
+// Signal markers and levels, drawn only on confirmed bars (no live-bar repaint)
+if fire and barstate.isconfirmed
+    x2 = bar_index + 10
+    line.new(bar_index, sigEntry, x2, sigEntry, color=color.green, width=2)
+    line.new(bar_index, sigSL, x2, sigSL, color=color.red, width=2)
+    if not na(sigT1)
+        line.new(bar_index, sigT1, x2, sigT1, color=color.teal, style=line.style_dashed)
+    if not na(sigT2)
+        line.new(bar_index, sigT2, x2, sigT2, color=color.teal, style=line.style_dotted)
+    txt = stratTxt + "  " + confTxt + " " + str.tostring(score) + "/10\nEntry " + str.tostring(sigEntry, format.mintick) + "  SL " + str.tostring(sigSL, format.mintick) + "\nT1 " + str.tostring(sigT1, format.mintick) + (na(sigT2) ? "" : "  T2 " + str.tostring(sigT2, format.mintick)) + "\nQty " + str.tostring(qty) + "  risk INR " + str.tostring(math.round(qty * sigR))
+    label.new(bar_index, low - atr, txt, style=label.style_label_up, color=color.new(color.green, 20), textcolor=color.white, size=size.small)
+plotshape(sig > 0 and not fire and barstate.isconfirmed, "Setup but LOW / unsized", shape.circle, location.belowbar, color=color.new(color.gray, 40), size=size.tiny)
+
+// Status table
+var table tb = table.new(position.top_right, 2, 11, border_width=1)
+f_row(r, k, v, c) =>
+    table.cell(tb, 0, r, k, text_color=color.white, bgcolor=color.new(color.black, 20), text_size=size.small)
+    table.cell(tb, 1, r, v, text_color=color.white, bgcolor=c, text_size=size.small)
+if barstate.islast
+    ok = color.new(color.green, 30)
+    bad = color.new(color.red, 30)
+    neu = color.new(color.gray, 30)
+    f_row(0, "Chart TF", timeframe.isdaily ? "Daily OK" : "NOT DAILY - switch to 1D", timeframe.isdaily ? ok : bad)
+    f_row(1, "Regime (Nifty>EMA50 rising)", regimeOn ? "ON" : "OFF - no new longs", regimeOn ? ok : bad)
+    f_row(2, "India VIX", na(vix) ? "n/a" : str.tostring(vix, "#.#") + (vixOk ? " ok" : " > cap"), vixOk ? ok : bad)
+    f_row(3, "News veto (14d)", newsVeto ? (earnVeto ? "EARNINGS" : "MACRO date") : "clear", newsVeto ? bad : ok)
+    f_row(4, "Stock ADX / RSI14 / RSI2", str.tostring(adx, "#") + " / " + str.tostring(rsi14, "#") + " / " + str.tostring(rsi2, "#"), neu)
+    f_row(5, "Weekly > EMA20", wkUp ? "yes" : "no", wkUp ? ok : neu)
+    f_row(6, "Signal this bar", sig > 0 ? stratTxt : "none", sig > 0 ? ok : neu)
+    f_row(7, "Score T/M/V/SR/HTF", sig > 0 ? str.tostring(scoreTrend) + "/" + str.tostring(scoreMom) + "/" + str.tostring(scoreVol) + "/" + str.tostring(scoreSR) + "/" + str.tostring(scoreHTF) + " = " + str.tostring(score) + " " + confTxt : "-", sig > 0 ? (score >= 8 ? ok : score >= 6 ? color.new(color.orange, 30) : bad) : neu)
+    f_row(8, "Entry / SL", sig > 0 ? str.tostring(sigEntry, format.mintick) + " / " + str.tostring(sigSL, format.mintick) : "-", neu)
+    f_row(9, "T1 / T2", sig > 0 ? str.tostring(sigT1, format.mintick) + " / " + (na(sigT2) ? "trail" : str.tostring(sigT2, format.mintick)) : "-", neu)
+    f_row(10, "Qty @ INR " + str.tostring(capital, "#"), fire ? str.tostring(qty) + " sh, risk INR " + str.tostring(math.round(qty * sigR)) : (sig > 0 ? "0 (LOW or unsized) = NO TRADE" : "NO TRADE"), fire ? ok : neu)
+
+// Alerts. Static conditions (pick in the alert dialog) plus one dynamic alert() with the full signal text.
+alertcondition(fire and sig == 1, "NSS A pullback long", "NSS A pullback setup on {{ticker}}")
+alertcondition(fire and sig == 2, "NSS B breakout long", "NSS B breakout setup on {{ticker}}")
+alertcondition(fire and sig == 3, "NSS C mean-reversion long", "NSS C mean-reversion setup on {{ticker}}")
+alertcondition(fire, "NSS any long setup", "NSS setup on {{ticker}}")
+if fire and barstate.isconfirmed
+    alert(syminfo.ticker + " | LONG | " + confTxt + " " + str.tostring(score) + "/10 | " + stratTxt + " | Entry " + str.tostring(sigEntry, format.mintick) + " SL " + str.tostring(sigSL, format.mintick) + " T1 " + str.tostring(sigT1, format.mintick) + (na(sigT2) ? "" : " T2 " + str.tostring(sigT2, format.mintick)) + " | Qty " + str.tostring(qty), alert.freq_once_per_bar_close)

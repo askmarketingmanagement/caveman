@@ -1,0 +1,5 @@
+//@version=5
+// NSS - Nifty Swing Signals: STRATEGY for the Strategy Tester. Same core logic as the indicator (generated from one source).
+// Costs: 0.33% per side = STT 0.1% + exchange/stamp ~0.03% (avg) + 0.1% slippage + rounding. Zerodha's flat DP charge (~INR 18 per sell)
+// cannot be combined with percent commission in Pine; the Python engine adds it. Long-only, one position per chart symbol.
+strategy("NSS Nifty Swing Strategy", shorttitle="NSS-ST", overlay=true, initial_capital=50000, default_qty_type=strategy.fixed, default_qty_value=1, commission_type=strategy.commission.percent, commission_value=0.33, pyramiding=0, calc_on_order_fills=false, process_orders_on_close=false, max_lines_count=500, max_labels_count=500)

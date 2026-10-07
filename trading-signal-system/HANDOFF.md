@@ -7,7 +7,9 @@ Last updated: 2026-10-07 (session 2)
 
 ## Current phase
 
-**Phase 1 — BLOCKED on broker decision.**
+**Phase 2 — Pine scripts written, awaiting user's compile result. (Phase 1 approved with "go" on 2026-10-07.)**
+
+Historical note from Phase 1:
 User said they use **Olymp Trade**. Olymp Trade is on the RBI Alert List of
 entities not authorised to deal in forex / run electronic trading platforms
 in India, is not SEBI-registered, and offers fixed-time (binary-style) trades
@@ -22,8 +24,8 @@ spec. The spec is otherwise unchanged and still awaits approval.
 
 | Phase | Deliverable | Status |
 |---|---|---|
-| 1 | `STRATEGY_SPEC.md` | Drafted, awaiting approval |
-| 2 | Pine v5 indicator + strategy(), paste instructions | Not started |
+| 1 | `STRATEGY_SPEC.md` | **Approved** ("go", 2026-10-07) |
+| 2 | Pine v5 indicator + strategy(), paste instructions | Written: `pine/nss_indicator.pine`, `pine/nss_strategy.pine`, `pine/PINE_SETUP.md`. Generated from `pine/_*.pine.part` by `tools/build_pine.py` (run `--check` in any verification). **Not yet compiled in TradingView** — user must paste and report errors. |
 | 3 | `BACKTEST_REPORT.md` with costs, regime + day-of-week breakdown, keep/kill/tweak | Not started |
 | 4 | Python companion app: data pull, signal engine matching Pine, verification script, news-risk check, local dashboard, trade journal | Started early: `tools/regime_check.py`, `journal/` |
 | 5 | Daily operating routine in the fixed signal format | Not started |
@@ -87,6 +89,14 @@ no real-money sizing until capital ≥ ~₹30k. User asked for trade timing; the
 spec's timing (close-of-day signal → next-open stop order → 2–10 day hold →
 day-10 time stop) was explained. Still awaiting "go" for Phase 2.
 
+## Phase 2 decisions (2026-10-07)
+- Paper capital ₹50,000, 1% risk at HIGH, 0.5% at MED, 25% max position. Pine v5 as asked.
+- All three strategies built. Conflict rule, confluence score, regime, VIX cap, macro-date and earnings vetoes all in the shared core.
+- Shared-core build: one `_core.pine.part` → two scripts. Never hand-edit the generated `.pine` files.
+- Execution model fixed for Pine AND Python: A/B buy-stop at high+tick valid next bar; C buy-limit at close valid next bar, fills if low <= limit at min(open, limit) (gap-skip rule dropped, spec §4C amended). Exits attached at entry time from trigger-based levels. Close-based exits fill next open. Time stops: A/B 10 bars, C 5 bars.
+- Costs in Pine: 0.33%/side percent commission (STT+charges+slippage). Flat DP ~₹18/sell NOT in Pine; Python adds it.
+- Pine limitations documented in `pine/PINE_SETUP.md` (per-symbol only, same-bar stop/target ambiguity, gap fills, macro dates as input string).
+
 ## Open questions for the user (from spec §7)
 
 - **Broker: user named Olymp Trade. Blocked until they pick a SEBI-registered broker or explicitly rewrite rule 5 (see Current phase).**
@@ -127,4 +137,5 @@ day-10 time stop) was explained. Still awaiting "go" for Phase 2.
 
 ## Next action
 
-Wait for the user's answer to spec §7. On "approved": start Phase 2, Pine v5 indicator first, then strategy(), then paste instructions, all under `trading-signal-system/pine/`.
+1. User pastes `pine/nss_indicator.pine` into Pine Editor on an NSE daily chart and reports any compile error (exact line + message). Fix in the `.part` files, rebuild.
+2. Once both scripts compile: Phase 3. Pull 2023-01-01→today daily bars for all Nifty 50 names via the TradingView MCP (`get-ohlcv`, 933+ bars each), run the Python engine (to be written, must mirror the core), and have the user run the Strategy Tester on 5 names to cross-check entries. Write `BACKTEST_REPORT.md`.

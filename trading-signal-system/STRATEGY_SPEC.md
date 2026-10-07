@@ -1,6 +1,6 @@
 # STRATEGY_SPEC.md — Phase 1 (awaiting approval)
 
-Status: **DRAFT — nothing here is live. No code until you approve.**
+Status: **APPROVED 2026-10-07 ("go"), Phase 2 in progress. Paper trading only; paper capital ₹50,000.**
 Date: 2026-10-07
 
 ---
@@ -15,7 +15,7 @@ these four lines.
 |---|---|---|
 | **MARKET** | NSE large-cap cash equity: the **Nifty 50 constituents**, traded as delivery (CNC). Nifty 50 index used as a regime filter only, not traded. | Liquid, tight spreads, 2+ years of free daily data (yfinance `.NS` tickers, TradingView), and SEBI-regulated. Index options were rejected on purpose, see 0.1. |
 | **TRADING STYLE** | **Swing, 2–10 trading days, on daily charts**, with the weekly chart and the Nifty 50 index as higher-timeframe filters. Scan after 3:30 pm close, orders placed for next morning. | Daily bars backtest honestly with free data. You don't have to sit at a screen. Intraday 15-min on options was rejected, see 0.1. |
-| **CAPITAL & MAX RISK** | **₹2,00,000 capital. Max 1% (₹2,000) risked per trade. Max 3 open positions. Max 25% of capital (₹50,000) in any one position. Max 3% total open risk.** | ₹2,000 of risk per trade is the smallest amount where a ~0.45% round-trip cost does not eat the edge. Below ~₹1L capital the fees dominate and I would tell you not to bother with this style. |
+| **CAPITAL & MAX RISK** | **₹50,000 PAPER capital (user's real capital is ₹700, see §0.3; original design point was ₹2,00,000). Max 1% (₹2,000) risked per trade. Max 3 open positions. Max 25% of capital (₹50,000) in any one position. Max 3% total open risk.** | ₹2,000 of risk per trade is the smallest amount where a ~0.45% round-trip cost does not eat the edge. Below ~₹1L capital the fees dominate and I would tell you not to bother with this style. |
 | **BROKER** | **Zerodha** (Kite web/app for execution; **Kite Connect** official API for the Phase 4 app). Fallback data source for end-of-day: yfinance. | Largest SEBI-registered retail broker, documented official API, zero brokerage on delivery. API pricing changes periodically; verify current Kite Connect and historical-data charges before Phase 4. |
 
 ### 0.1 Why NOT index options intraday (blunt version)
@@ -174,7 +174,7 @@ Five components, each scored 0/1/2. Total 0–10.
 3. Oversold: RSI(2) < 10 AND close < 20-EMA, AND close is within 1 ATR(14) of the 50-EMA (the "support" being tested).
 4. Not in free-fall: D's close is above D's low by at least 30% of the day's range (some buying showed up), and the 3-day decline is less than 8%.
 
-**Entry (day D+1):** buy limit at D's close (not a stop; we want the fill near the low), valid for the day. If the stock gaps up more than 1% at open, skip.
+**Entry (day D+1):** buy limit at D's close (not a stop; we want the fill near the low), valid for the day. Fills if D+1's low touches the limit, at min(open, limit). *(Amended 2026-10-07 in Phase 2: the "skip if gap up > 1%" rule was dropped because Pine cannot cancel an order intrabar; keeping Pine and Python identical matters more.)*
 
 **Stop-loss:** D's low − 0.5 × ATR(14). Reject if stop > 3.5% from entry.
 

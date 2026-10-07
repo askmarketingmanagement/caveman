@@ -1,0 +1,4 @@
+//@version=5
+// NSS - Nifty Swing Signals: INDICATOR. Marks A/B/C long setups with entry / stop / target lines, a confluence score and alerts.
+// Spec: trading-signal-system/STRATEGY_SPEC.md. Daily chart, NSE cash stocks, long-only. Paper trading until the backtest passes.
+indicator("NSS Nifty Swing Signals", shorttitle="NSS", overlay=true, max_lines_count=500, max_labels_count=500)
