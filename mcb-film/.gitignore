@@ -1,0 +1,17 @@
+# Large / regenerable media stays out of git
+ref/reference.mp4
+ref/frames/
+stills/**/*.png
+stills/**/*.jpg
+shots/
+gfx/**/*.mov
+gfx/**/*.png
+audio/music/*.wav
+audio/music/*.mp3
+audio/sfx/*
+!audio/sfx/.keep
+audio_work/**/*.wav
+out/*.mp4
+out/*.jpg
+node_modules/
+ref/reference_audio.wav

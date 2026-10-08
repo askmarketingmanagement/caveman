@@ -1,0 +1,22 @@
+{
+  "callouts": {
+    "display":  {"title": "See-through display", "sub": "Defects outlined over the real part"},
+    "ai":       {"title": "On-device AI", "sub": "Real-time inspection. No internet needed.", "sub2": "MPU + MCU"},
+    "camera":   {"title": "Inspection camera", "sub": "Every part captured as evidence"},
+    "voice":    {"title": "Voice control", "sub": "Bone-conduction mic, noise cancelling"},
+    "speaker":  {"title": "Spoken alerts", "sub": "Built-in speakers"},
+    "connect":  {"title": "Wi-Fi · On-board memory · GPS tagging", "sub": "Works offline. Syncs when connected."}
+  },
+  "ui": {
+    "defect_1": "Contact tip oxidised",
+    "defect_2": "Arc plate missing",
+    "verdict_pass": "PASS", "verdict_check": "CHECK", "verdict_reject": "REJECT",
+    "toast_photo": "Photo saved · Station 04 · Batch B-2611 · 14:32",
+    "station_sign": "Electrical testing",
+    "tablet_title": "Shift A · Defects by type",
+    "tablet_bars": ["Discolouration", "Wear and tear", "Missing parts", "Print / label"],
+    "trend_alert": "Discolouration rising · Station 04"
+  },
+  "voice": {"worker_1": "Reject.", "worker_2": "Next.", "device_1": "Critical. Arc plate missing."},
+  "end": {"name": "[PRODUCT NAME]", "descriptor": "", "logo": "brand/logo.svg"}
+}
